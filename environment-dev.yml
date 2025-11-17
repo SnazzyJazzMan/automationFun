@@ -1,4 +1,4 @@
-name: arcticdb
+name: automationFun
 channels:
   - conda-forge
 dependencies:
