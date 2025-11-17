@@ -131,6 +131,69 @@ To find out more about working with data, visit our [docs](https://docs.arcticdb
 
 ---
 
+## Enterprise Audit and Traceability
+
+ArcticDB now includes enterprise-grade audit and traceability features for production environments requiring compliance and data governance.
+
+### Key Features
+
+* **Mandatory User Identification**: All read and write operations require a `user_id` parameter identifying the actor
+* **Comprehensive Audit Logging**: Every operation is logged with timestamp, actor, operation type, and affected symbols
+* **Migration Support**: Tools to migrate existing data with default audit metadata
+* **Thread-Safe Logging**: Concurrent operations are safely logged without conflicts
+
+### Quick Start with Auditing
+
+```Python
+>>> from arcticdb.audit import AuditedLibrary, AuditLogger
+>>>
+>>> # Set up audit logging
+>>> audit_logger = AuditLogger(log_file="audit.log")
+>>>
+>>> # Wrap your library with audit functionality
+>>> lib = ac.get_library('travel_data', create_if_missing=True)
+>>> audited_lib = AuditedLibrary(lib, audit_logger)
+>>>
+>>> # All operations now require user_id
+>>> audited_lib.write("my_data", df, user_id="john.doe")
+>>> data = audited_lib.read("my_data", user_id="jane.smith")
+```
+
+### Migrating Existing Data
+
+For existing ArcticDB databases, use the migration script to add audit metadata:
+
+```bash
+python -m arcticdb.scripts.migrate_audit lmdb:///path/to/db library_name --audit-log migration_audit.log
+```
+
+### Example Usage
+
+See `examples/audit_example.py` for a comprehensive example demonstrating:
+- Writing and reading with user identification
+- Batch operations with audit logging
+- System operations tracking
+- Viewing audit logs
+
+### Audit Log Format
+
+Audit logs are stored in JSON format with the following structure:
+
+```json
+{
+  "timestamp": "2024-01-15T10:30:45.123456",
+  "actor": "john.doe",
+  "operation": "write",
+  "symbols": ["stock_AAPL"],
+  "library": "trading_data",
+  "metadata": {"prune_previous_versions": false}
+}
+```
+
+For more details on audit requirements and usage, see `.augment/rules.md`.
+
+---
+
 ## Documentation
 
 The source code for the ArcticDB docs are located in the [docs](https://github.com/man-group/ArcticDB/tree/master/docs) folder, and are hosted at [docs.arcticdb.io](https://docs.arcticdb.io).

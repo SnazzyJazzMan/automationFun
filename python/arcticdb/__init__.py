@@ -28,6 +28,9 @@ from arcticdb.version_store.library import (
 )
 from arcticdb.version_store.admin_tools import KeyType, Size
 
+# Enterprise audit functionality
+from arcticdb.audit import AuditLogger, AuditEntry, AuditedLibrary
+
 set_config_from_env_vars(_os.environ)
 
 __version__ = "dev"
